@@ -9,6 +9,9 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
@@ -42,25 +45,50 @@ public class MovieListFragment extends Fragment {
         // Required empty public constructor
     }
 
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        // Add this line in order for this fragment to handle menu events.
+        setHasOptionsMenu(true);
+    }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_blank, container, false);
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.sort_by, menu);
+    }
 
-        sharedPreferences = getActivity().getSharedPreferences("PrefData", Context.MODE_PRIVATE);
-        sortByValue = sharedPreferences
-                .getString("SORT_VALUE", getResources().getString(R.string.popularity_desc));
-        apiKeyVAlue = BuildConfig.TMDB_API_KEY;
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        if (id == R.id.popularity) {
+            String sortValue = getResources().getString(R.string.popularity_desc);
+            if (sharedPreferences.getString("SORT_VALUE", "vote_count.desc").equals(sortValue)) {
+                //do nothing
+            } else {
+                LoadPosters(sortValue);
 
-        retrofit = new Retrofit.Builder()
-                .baseUrl(BASE_URL)
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
-        movieAdapter = new MovieAdapter(getContext(), items);
-        RecyclerView recyclerView = (RecyclerView) rootView.findViewById(R.id.movie_list);
-        recyclerView.setLayoutManager(new GridLayoutManager(getContext(), 2));
-        recyclerView.setAdapter(movieAdapter);
+            }
+        }
+        if (id == R.id.rating) {
+            String sortValue = getResources().getString(R.string.rating_desc);
+            if (sharedPreferences.getString("SORT_VALUE", "popularity.desc").equals(sortValue)) {
+                //do nothing
+            } else {
+                LoadPosters(sortValue);
+            }
+
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    private void LoadPosters(String sortValue) {
+        //get the recent sort value and save it to shared prefs
+        sortByValue = sortValue;
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString("SORT_VALUE", sortValue);
+        editor.commit();
+
+        //Make the retrofit call and load the posters
         TMDBService.TMDBapi tmdBapi = retrofit.create(TMDBService.TMDBapi.class);
         call = tmdBapi.getMovies(sortByValue, apiKeyVAlue);
         call.enqueue(new Callback<TMDBmovieList>() {
@@ -81,6 +109,30 @@ public class MovieListFragment extends Fragment {
                 Toast.makeText(getContext(), "Onfailure called", Toast.LENGTH_SHORT).show();
             }
         });
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        View rootView = inflater.inflate(R.layout.fragment_blank, container, false);
+
+        //Initialize or get the latest sort value fromshared prefs
+        sharedPreferences = getActivity().getSharedPreferences("PrefData", Context.MODE_PRIVATE);
+        sortByValue = sharedPreferences
+                .getString("SORT_VALUE", getResources().getString(R.string.popularity_desc));
+        apiKeyVAlue = BuildConfig.TMDB_API_KEY;
+
+        retrofit = new Retrofit.Builder()
+                .baseUrl(BASE_URL)
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+
+        movieAdapter = new MovieAdapter(getContext(), items);
+        RecyclerView recyclerView = (RecyclerView) rootView.findViewById(R.id.movie_list);
+        recyclerView.setLayoutManager(new GridLayoutManager(getContext(), 2));
+        recyclerView.setAdapter(movieAdapter);
+        LoadPosters(sortByValue);
+
         return rootView;
     }
 

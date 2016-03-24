@@ -3,4 +3,7 @@
 
     <string name="popularity_desc">popularity.desc</string>
     <string name="rating_desc">vote_count.desc</string>
+    <string name="action_sort_by">Sort by</string>
+    <string name="popularity">Popularity</string>
+    <string name="rating">Rating</string>
 </resources>
