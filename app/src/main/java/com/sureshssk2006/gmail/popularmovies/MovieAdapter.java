@@ -21,8 +21,9 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder> 
     private List<TMDBmovieList.TmdbMovee> movieArrayList;
     final String BASE_URL = "http://image.tmdb.org/t/p/";
     final String POSTER_SIZE = "w185";
+    OnItemClickListener mItemClickListener;
 
-    public MovieAdapter(Context context,List<TMDBmovieList.TmdbMovee> items) {
+    public MovieAdapter(Context context, List<TMDBmovieList.TmdbMovee> items) {
         this.movieArrayList = items;
         this.context = context;
         notifyDataSetChanged();
@@ -57,12 +58,28 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder> 
         return movieArrayList.size();
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder{
+    public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
         public ImageView posterView;
         public ViewHolder(View itemView) {
             super(itemView);
             posterView = (ImageView) itemView.findViewById(R.id.image_view);
+            itemView.setOnClickListener(this);
         }
+
+        @Override
+        public void onClick(View v) {
+            if(mItemClickListener != null){
+                mItemClickListener.onItemClick(v, getAdapterPosition());
+            }
+        }
+    }
+
+    public interface OnItemClickListener {
+        public void onItemClick(View view, int position);
+    }
+
+    public void SetOnItemClickListener(final OnItemClickListener mItemClickListener){
+        this.mItemClickListener = mItemClickListener;
     }
 
     public void swapList(List<TMDBmovieList.TmdbMovee> items){

@@ -130,11 +130,23 @@ public class MovieListFragment extends Fragment {
         movieAdapter = new MovieAdapter(getContext(), items);
         RecyclerView recyclerView = (RecyclerView) rootView.findViewById(R.id.movie_list);
         recyclerView.setLayoutManager(new GridLayoutManager(getContext(), 2));
+        recyclerView.setHasFixedSize(true);
         recyclerView.setAdapter(movieAdapter);
+        movieAdapter.SetOnItemClickListener(new MovieAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(View view, int position) {
+                TMDBmovieList.TmdbMovee movie = items.get(position);
+                Toast.makeText(getContext(), movie.getOriginal_title(), Toast.LENGTH_SHORT).show();
+                DetailsFragment detailsFragment = new DetailsFragment();
+                getFragmentManager()
+                        .beginTransaction()
+                        .replace(R.id.container, detailsFragment)
+                        .addToBackStack(null)
+                        .commit();
+            }
+        });
         LoadPosters(sortByValue);
 
         return rootView;
     }
-
-
 }
