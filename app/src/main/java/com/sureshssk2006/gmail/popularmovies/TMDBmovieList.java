@@ -1,5 +1,8 @@
 package com.sureshssk2006.gmail.popularmovies;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import java.util.List;
 
 /**
@@ -18,7 +21,7 @@ public class TMDBmovieList {
     private List<TmdbMovee> results;
 
 
-    public static class TmdbMovee {
+    public static class TmdbMovee implements Parcelable {
 
         String results;
         String original_title;
@@ -26,6 +29,16 @@ public class TMDBmovieList {
         String overview;
         String release_date;
         String vote_average;
+
+        public String getFullPosterpath() {
+            return fullPosterpath;
+        }
+
+        public void setFullPosterpath(String fullPosterpath) {
+            this.fullPosterpath = fullPosterpath;
+        }
+
+        String fullPosterpath;
 
         public String getPoster_path() {
             return poster_path;
@@ -76,5 +89,14 @@ public class TMDBmovieList {
         }
 
 
+        @Override
+        public int describeContents() {
+            return 0;
+        }
+
+        @Override
+        public void writeToParcel(Parcel dest, int flags) {
+
+        }
     }
 }

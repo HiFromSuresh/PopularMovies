@@ -40,6 +40,7 @@ public class MovieListFragment extends Fragment {
     private String apiKeyVAlue;
     private Call<TMDBmovieList> call;
     private TMDBmovieList movieList;
+    private static final String OBJECT_KEY = "object_key";
 
     public MovieListFragment() {
         // Required empty public constructor
@@ -136,8 +137,10 @@ public class MovieListFragment extends Fragment {
             @Override
             public void onItemClick(View view, int position) {
                 TMDBmovieList.TmdbMovee movie = items.get(position);
-                Toast.makeText(getContext(), movie.getOriginal_title(), Toast.LENGTH_SHORT).show();
                 DetailsFragment detailsFragment = new DetailsFragment();
+                Bundle args = new Bundle();
+                args.putParcelable(OBJECT_KEY, movie);
+                detailsFragment.setArguments(args);
                 getFragmentManager()
                         .beginTransaction()
                         .replace(R.id.container, detailsFragment)

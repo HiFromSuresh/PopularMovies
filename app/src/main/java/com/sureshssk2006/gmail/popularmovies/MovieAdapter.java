@@ -47,6 +47,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder> 
                 .appendPath(POSTER_SIZE)
                 .appendEncodedPath(movie.getPoster_path())
                 .build();
+        movie.setFullPosterpath(builtUri.toString());
         return builtUri.toString();
     }
 
