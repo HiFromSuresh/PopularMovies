@@ -130,7 +130,15 @@ public class MovieListFragment extends Fragment {
 
         movieAdapter = new MovieAdapter(getContext(), items);
         RecyclerView recyclerView = (RecyclerView) rootView.findViewById(R.id.movie_list);
-        recyclerView.setLayoutManager(new GridLayoutManager(getContext(), 2));
+
+        //Set recyclerView layout manager to have two columns if in portrait mode
+        //else set three columns for landscape mode
+        if(getResources().getConfiguration().orientation == 1) {
+            recyclerView.setLayoutManager(new GridLayoutManager(getContext(), 2));
+        }else{
+            recyclerView.setLayoutManager(new GridLayoutManager(getContext(), 3));
+        }
+
         recyclerView.setHasFixedSize(true);
         recyclerView.setAdapter(movieAdapter);
         movieAdapter.SetOnItemClickListener(new MovieAdapter.OnItemClickListener() {
