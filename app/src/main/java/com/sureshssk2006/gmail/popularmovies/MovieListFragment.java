@@ -4,6 +4,7 @@ package com.sureshssk2006.gmail.popularmovies;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -16,6 +17,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import retrofit2.Call;
@@ -31,6 +33,7 @@ import retrofit2.Retrofit;
 public class MovieListFragment extends Fragment {
 
 
+    private static final String LIST_STATE_KEY = "list_state_key";
     private SharedPreferences sharedPreferences;
     private String sortByValue;
     private MovieAdapter movieAdapter;
@@ -41,6 +44,8 @@ public class MovieListFragment extends Fragment {
     private Call<TMDBmovieList> call;
     private TMDBmovieList movieList;
     private static final String OBJECT_KEY = "object_key";
+    private Parcelable recyclerViewState;
+    private RecyclerView recyclerView;
 
     public MovieListFragment() {
         // Required empty public constructor
@@ -129,7 +134,7 @@ public class MovieListFragment extends Fragment {
                 .build();
 
         movieAdapter = new MovieAdapter(getContext(), items);
-        RecyclerView recyclerView = (RecyclerView) rootView.findViewById(R.id.movie_list);
+        recyclerView = (RecyclerView) rootView.findViewById(R.id.movie_list);
 
         //Set recyclerView layout manager to have two columns if in portrait mode
         //else set three columns for landscape mode
@@ -156,8 +161,20 @@ public class MovieListFragment extends Fragment {
                         .commit();
             }
         });
-        LoadPosters(sortByValue);
 
+        if(savedInstanceState == null) {
+            LoadPosters(sortByValue);
+        }else{
+            items = savedInstanceState.getParcelableArrayList(LIST_STATE_KEY);
+            movieAdapter.swapList(items);
+        }
         return rootView;
     }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putParcelableArrayList(LIST_STATE_KEY, (ArrayList<? extends Parcelable>) items);
+    }
+
 }
