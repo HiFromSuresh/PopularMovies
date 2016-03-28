@@ -1,12 +1,17 @@
 package com.sureshssk2006.gmail.popularmovies;
 
 
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -26,10 +31,13 @@ import retrofit2.Retrofit;
  */
 public class DetailsFragment extends Fragment {
 
+    private static final String YOUTUBE_KEY = "v";
     final String BASE_URL = "https://api.themoviedb.org/";
+    final String YOUTUBE_BASE_URL = "https://www.youtube.com/watch?";
     private Retrofit retrofit;
     Call<TmdbTrailersList> call;
     private String apiKeyVAlue;
+    LinearLayout layout;
 
     private final String OBJECT_KEY = "object_key";
     private TextView mTitleTextView;
@@ -57,6 +65,7 @@ public class DetailsFragment extends Fragment {
         mOverviewTextView = (TextView) rootView.findViewById(R.id.details_plot_synopsis);
         mRatingTextView = (TextView) rootView.findViewById(R.id.details_rating);
         mReleasedateTextView = (TextView) rootView.findViewById(R.id.details_release_date);
+        layout = (LinearLayout) rootView.findViewById(R.id.linear_layout);
 
         //get Data from bundle
         Bundle bundle = this.getArguments();
@@ -87,9 +96,26 @@ public class DetailsFragment extends Fragment {
             public void onResponse(Response<TmdbTrailersList> response) {
                 trailerList = response.body();
                 trailers = trailerList.getResults();
-                TmdbTrailersList.TmdbTrailer oneTrailer = trailers.get(0);
-                Toast.makeText(getContext(), oneTrailer.getKey(), Toast.LENGTH_SHORT).show();
+                final TmdbTrailersList.TmdbTrailer oneTrailer = trailers.get(0);
 
+                Button btn = new Button(getContext());
+                btn.setText("Trailer 1");
+                btn.setLayoutParams(new ViewGroup
+                        .LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
+                        ViewGroup.LayoutParams.WRAP_CONTENT));
+                layout.addView(btn);
+
+                btn.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Uri builtUri = Uri.parse(YOUTUBE_BASE_URL).buildUpon()
+                                .appendQueryParameter(YOUTUBE_KEY, oneTrailer.getKey())
+                                .build();
+                        Log.d("log", builtUri.toString());
+                        Intent intent = new Intent(Intent.ACTION_VIEW, builtUri);
+                        startActivity(intent);
+                    }
+                });
             }
 
             @Override
