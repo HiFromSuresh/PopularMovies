@@ -8,8 +8,17 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
+
+import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.GsonConverterFactory;
+import retrofit2.Response;
+import retrofit2.Retrofit;
 
 
 /**
@@ -17,12 +26,20 @@ import com.squareup.picasso.Picasso;
  */
 public class DetailsFragment extends Fragment {
 
+    final String BASE_URL = "https://api.themoviedb.org/";
+    private Retrofit retrofit;
+    Call<TmdbTrailersList> call;
+    private String apiKeyVAlue;
+
     private final String OBJECT_KEY = "object_key";
     private TextView mTitleTextView;
     private ImageView mImageView;
     private TextView mOverviewTextView;
     private TextView mReleasedateTextView;
     private TextView mRatingTextView;
+    TMDBmovieList.TmdbMovee tmdbMovie;
+    private TmdbTrailersList trailerList;
+    private List<TmdbTrailersList.TmdbTrailer> trailers;
 
     public DetailsFragment() {
         // Required empty public constructor
@@ -43,7 +60,7 @@ public class DetailsFragment extends Fragment {
 
         //get Data from bundle
         Bundle bundle = this.getArguments();
-        TMDBmovieList.TmdbMovee tmdbMovie = bundle.getParcelable(OBJECT_KEY);
+        tmdbMovie = bundle.getParcelable(OBJECT_KEY);
 
         mTitleTextView.setText(tmdbMovie.getOriginal_title());
         Picasso.with(getContext()).load(tmdbMovie.getFullPosterpath()).into(mImageView);
@@ -51,7 +68,35 @@ public class DetailsFragment extends Fragment {
         mRatingTextView.setText(getVoteAverage(tmdbMovie.getVote_average()));
         mReleasedateTextView.setText(dateToYear(tmdbMovie.getRelease_date()));
 
+        apiKeyVAlue = BuildConfig.TMDB_API_KEY;
+        addTrailers();
+
         return rootView;
+    }
+
+    private void addTrailers() {
+        retrofit = new Retrofit.Builder()
+                .baseUrl(BASE_URL)
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+
+        TMDBService.TMDBapi tmdBapi = retrofit.create(TMDBService.TMDBapi.class);
+        call = tmdBapi.getTrailers(tmdbMovie.getId(), apiKeyVAlue);
+        call.enqueue(new Callback<TmdbTrailersList>() {
+            @Override
+            public void onResponse(Response<TmdbTrailersList> response) {
+                trailerList = response.body();
+                trailers = trailerList.getResults();
+                TmdbTrailersList.TmdbTrailer oneTrailer = trailers.get(0);
+                Toast.makeText(getContext(), oneTrailer.getKey(), Toast.LENGTH_SHORT).show();
+
+            }
+
+            @Override
+            public void onFailure(Throwable t) {
+                Toast.makeText(getContext(), "failure", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     private String dateToYear(String release_date) {

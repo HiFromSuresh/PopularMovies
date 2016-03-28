@@ -29,6 +29,31 @@ public class TMDBmovieList {
         String overview;
         String release_date;
         String vote_average;
+        String id;
+
+
+        protected TmdbMovee(Parcel in) {
+            results = in.readString();
+            original_title = in.readString();
+            poster_path = in.readString();
+            overview = in.readString();
+            release_date = in.readString();
+            vote_average = in.readString();
+            id = in.readString();
+            fullPosterpath = in.readString();
+        }
+
+        public static final Creator<TmdbMovee> CREATOR = new Creator<TmdbMovee>() {
+            @Override
+            public TmdbMovee createFromParcel(Parcel in) {
+                return new TmdbMovee(in);
+            }
+
+            @Override
+            public TmdbMovee[] newArray(int size) {
+                return new TmdbMovee[size];
+            }
+        };
 
         public String getFullPosterpath() {
             return fullPosterpath;
@@ -80,6 +105,14 @@ public class TMDBmovieList {
             this.vote_average = vote_average;
         }
 
+        public String getId() {
+            return id;
+        }
+
+        public void setId(String id) {
+            this.id = id;
+        }
+
         public String getResults() {
             return results;
         }
@@ -96,7 +129,14 @@ public class TMDBmovieList {
 
         @Override
         public void writeToParcel(Parcel dest, int flags) {
-
+            dest.writeString(results);
+            dest.writeString(original_title);
+            dest.writeString(poster_path);
+            dest.writeString(overview);
+            dest.writeString(release_date);
+            dest.writeString(vote_average);
+            dest.writeString(id);
+            dest.writeString(fullPosterpath);
         }
     }
 }
