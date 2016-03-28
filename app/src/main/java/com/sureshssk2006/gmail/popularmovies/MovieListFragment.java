@@ -44,7 +44,6 @@ public class MovieListFragment extends Fragment {
     private Call<TMDBmovieList> call;
     private TMDBmovieList movieList;
     private static final String OBJECT_KEY = "object_key";
-    private Parcelable recyclerViewState;
     private RecyclerView recyclerView;
 
     public MovieListFragment() {
