@@ -48,7 +48,7 @@ public class DetailsFragment extends Fragment {
         mTitleTextView.setText(tmdbMovie.getOriginal_title());
         Picasso.with(getContext()).load(tmdbMovie.getFullPosterpath()).into(mImageView);
         mOverviewTextView.setText(tmdbMovie.getOverview());
-        mRatingTextView.setText(tmdbMovie.getVote_average());
+        mRatingTextView.setText(getVoteAverage(tmdbMovie.getVote_average()));
         mReleasedateTextView.setText(dateToYear(tmdbMovie.getRelease_date()));
 
         return rootView;
@@ -58,6 +58,11 @@ public class DetailsFragment extends Fragment {
         String releaseDateYear = release_date.trim();
         releaseDateYear = releaseDateYear.substring(0, 4);
         return releaseDateYear;
+    }
+
+    public String getVoteAverage(String voteAverage) {
+        String voteAverageWithTotal = voteAverage + "/10";
+        return voteAverageWithTotal;
     }
 
 }
