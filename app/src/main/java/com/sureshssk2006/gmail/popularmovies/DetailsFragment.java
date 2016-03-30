@@ -1,6 +1,7 @@
 package com.sureshssk2006.gmail.popularmovies;
 
 
+import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -9,7 +10,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -65,7 +65,7 @@ public class DetailsFragment extends Fragment {
         mOverviewTextView = (TextView) rootView.findViewById(R.id.details_plot_synopsis);
         mRatingTextView = (TextView) rootView.findViewById(R.id.details_rating);
         mReleasedateTextView = (TextView) rootView.findViewById(R.id.details_release_date);
-        layout = (LinearLayout) rootView.findViewById(R.id.linear_layout);
+        layout = (LinearLayout) rootView.findViewById(R.id.trailers_layout);
 
         //get Data from bundle
         Bundle bundle = this.getArguments();
@@ -96,26 +96,32 @@ public class DetailsFragment extends Fragment {
             public void onResponse(Response<TmdbTrailersList> response) {
                 trailerList = response.body();
                 trailers = trailerList.getResults();
-                final TmdbTrailersList.TmdbTrailer oneTrailer = trailers.get(0);
 
-                Button btn = new Button(getContext());
-                btn.setText("Trailer 1");
-                btn.setLayoutParams(new ViewGroup
-                        .LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
-                        ViewGroup.LayoutParams.WRAP_CONTENT));
-                layout.addView(btn);
+                LayoutInflater inflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
-                btn.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        Uri builtUri = Uri.parse(YOUTUBE_BASE_URL).buildUpon()
-                                .appendQueryParameter(YOUTUBE_KEY, oneTrailer.getKey())
-                                .build();
-                        Log.d("log", builtUri.toString());
-                        Intent intent = new Intent(Intent.ACTION_VIEW, builtUri);
-                        startActivity(intent);
-                    }
-                });
+                for(int i = 0; i<trailers.size(); i++){
+                    View v = inflater.inflate(R.layout.trailer_item, null);
+                    final TmdbTrailersList.TmdbTrailer t = trailers.get(i);
+                    final TextView textView = (TextView) v.findViewById(R.id.trailer_text);
+                    ImageView imageView = (ImageView) v.findViewById(R.id.trailer_icon);
+
+                    textView.setText("Trailer " + Integer.toString((i+1)));
+                    layout.addView(v);
+
+                    v.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            Uri builtUri = Uri.parse(YOUTUBE_BASE_URL).buildUpon()
+                                    .appendQueryParameter(YOUTUBE_KEY, t.getKey())
+                                    .build();
+                            Log.d("log", builtUri.toString());
+                            Intent intent = new Intent(Intent.ACTION_VIEW, builtUri);
+                            startActivity(intent);
+                        }
+                    });
+
+                }
+
             }
 
             @Override
