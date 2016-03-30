@@ -20,5 +20,10 @@ public class TMDBService {
         Call<TmdbTrailersList> getTrailers(
                 @Path("movie_id") String movieId,
                 @Query("api_key") String apiKeyVAlue);
+
+        @GET("3/movie/{movie_id}/reviews?")
+        Call<TmdbReviewList> getReviews(
+                @Path("movie_id") String movieId,
+                @Query("api_key") String apiKeyVAlue);
     }
 }
