@@ -1,17 +1,21 @@
 package com.sureshssk2006.gmail.popularmovies;
 
 
+import android.content.ContentProviderOperation;
 import android.content.Context;
 import android.content.Intent;
+import android.content.OperationApplicationException;
 import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.RemoteException;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -19,6 +23,7 @@ import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import retrofit2.Call;
@@ -41,6 +46,7 @@ public class DetailsFragment extends Fragment {
     LinearLayout trailerLayout;
     LinearLayout reviewLayout;
     TextView reviewBtn;
+    Button markFavoriteBtn;
 
     private final String OBJECT_KEY = "object_key";
     private TextView mTitleTextView;
@@ -73,6 +79,7 @@ public class DetailsFragment extends Fragment {
         trailerLayout = (LinearLayout) rootView.findViewById(R.id.trailers_layout);
         reviewLayout = (LinearLayout) rootView.findViewById(R.id.review_layout);
         reviewBtn = (TextView) rootView.findViewById(R.id.review_button);
+        markFavoriteBtn = (Button) rootView.findViewById(R.id.btn_favorite);
 
 
         //get Data from bundle
@@ -93,6 +100,13 @@ public class DetailsFragment extends Fragment {
             public void onClick(View v) {
                 addReviews();
                 reviewBtn.setClickable(false);
+            }
+        });
+
+        markFavoriteBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                favoriteBtn();
             }
         });
 
@@ -206,6 +220,26 @@ public class DetailsFragment extends Fragment {
     public String getVoteAverage(String voteAverage) {
         String voteAverageWithTotal = voteAverage + "/10";
         return voteAverageWithTotal;
+    }
+
+    public void favoriteBtn(){
+        Toast.makeText(getContext(), "Favorite", Toast.LENGTH_SHORT).show();
+
+        ArrayList<ContentProviderOperation> operations = new ArrayList<>();
+        ContentProviderOperation.Builder builder = ContentProviderOperation.newInsert(
+                FavoriteMovieProvider.FavoriteMovies.CONTENT_URI);
+        builder.withValue(FavoriteMovieColumns.MOVIE_ID, tmdbMovie.getId());
+        builder.withValue(FavoriteMovieColumns.ORIGINAL_TITLE, tmdbMovie.getOriginal_title());
+        builder.withValue(FavoriteMovieColumns.OVERVIEW, tmdbMovie.getOverview());
+        operations.add(builder.build());
+
+        try {
+            getActivity().getContentResolver().applyBatch(FavoriteMovieProvider.AUTHORITY, operations);
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        } catch (OperationApplicationException e) {
+            e.printStackTrace();
+        }
     }
 
 }
