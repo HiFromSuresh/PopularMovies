@@ -19,7 +19,7 @@
 
         <provider
             android:authorities="com.sureshssk2006.gmail.popularmovies"
-            android:name=".generated.FavoriteMovieProvider"
+            android:name="com.sureshssk2006.gmail.popularmovies.generated.FavoriteMovieProvider"
             android:exported="false"/>
     </application>
 
