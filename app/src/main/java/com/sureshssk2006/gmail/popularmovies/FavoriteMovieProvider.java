@@ -34,5 +34,8 @@ public class FavoriteMovieProvider {
                 type = "vnd.android.cursor.dir/favorite_movie",
                 defaultSort = FavoriteMovieColumns._ID + "ASC")
         public static final Uri CONTENT_URI = buildUri(Path.FAVORITE_MOVIES);
+        public static Uri withId(long id){
+            return buildUri(Path.FAVORITE_MOVIES, String.valueOf(id));
+        }
     }
 }
