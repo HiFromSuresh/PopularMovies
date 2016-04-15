@@ -83,6 +83,14 @@ public class MovieListFragment extends Fragment {
             }
 
         }
+        if(id == R.id.favorite){
+            FavoritesFragment favoritesFragment = new FavoritesFragment();
+            getFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.container, favoritesFragment)
+                    .addToBackStack(null)
+                    .commit();
+        }
         return super.onOptionsItemSelected(item);
     }
 
