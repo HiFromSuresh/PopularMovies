@@ -5,9 +5,12 @@ import android.content.ContentProviderOperation;
 import android.content.Context;
 import android.content.Intent;
 import android.content.OperationApplicationException;
+import android.graphics.Bitmap;
 import android.graphics.Typeface;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.RemoteException;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -22,7 +25,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
+import com.squareup.picasso.Target;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -37,6 +43,8 @@ import retrofit2.Retrofit;
  * A simple {@link Fragment} subclass.
  */
 public class DetailsFragment extends Fragment {
+
+    private static final String LOG_TAG = DetailsFragment.class.getSimpleName();
 
     private static final String YOUTUBE_KEY = "v";
     final String BASE_URL = "https://api.themoviedb.org/";
@@ -223,7 +231,10 @@ public class DetailsFragment extends Fragment {
     }
 
     public void favoriteBtn(){
-        Toast.makeText(getContext(), "Favorite", Toast.LENGTH_SHORT).show();
+        saveFavoritePoster();
+
+        String posterFilePath = Environment.getExternalStorageDirectory().getPath()
+                + "/Popular Movies/" +tmdbMovie.getOriginal_title() + ".jpg";
 
         ArrayList<ContentProviderOperation> operations = new ArrayList<>();
         ContentProviderOperation.Builder builder = ContentProviderOperation.newInsert(
@@ -231,6 +242,7 @@ public class DetailsFragment extends Fragment {
         builder.withValue(FavoriteMovieColumns.MOVIE_ID, tmdbMovie.getId());
         builder.withValue(FavoriteMovieColumns.ORIGINAL_TITLE, tmdbMovie.getOriginal_title());
         builder.withValue(FavoriteMovieColumns.OVERVIEW, tmdbMovie.getOverview());
+        builder.withValue(FavoriteMovieColumns.POSTER, posterFilePath);
         operations.add(builder.build());
 
         try {
@@ -241,5 +253,46 @@ public class DetailsFragment extends Fragment {
             e.printStackTrace();
         }
     }
+
+    private void saveFavoritePoster() {
+        Picasso.with(getContext()).load(tmdbMovie.getFullPosterpath()).into(target);
+    }
+
+    private Target target = new Target() {
+        @Override
+        public void onBitmapLoaded(final Bitmap bitmap, Picasso.LoadedFrom from) {
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+
+                    File folder = new File(
+                            Environment.getExternalStorageDirectory().getPath()
+                                    + "/Popular Movies");
+                    folder.mkdirs();
+                    File file = new File(folder, tmdbMovie.getOriginal_title() + ".jpg");
+                    Log.d(LOG_TAG, file.getPath().toString());
+                    try {
+                        file.createNewFile();
+                        FileOutputStream ostream = new FileOutputStream(file);
+                        bitmap.compress(Bitmap.CompressFormat.JPEG,100,ostream);
+                        ostream.close();
+                    }
+                    catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+            }).start();
+        }
+
+        @Override
+        public void onBitmapFailed(Drawable errorDrawable) {
+
+        }
+
+        @Override
+        public void onPrepareLoad(Drawable placeHolderDrawable) {
+
+        }
+    };
 
 }
