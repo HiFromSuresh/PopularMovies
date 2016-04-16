@@ -1,6 +1,7 @@
 package com.sureshssk2006.gmail.popularmovies;
 
 import android.net.Uri;
+import android.util.Log;
 
 import net.simonvt.schematic.annotation.ContentProvider;
 import net.simonvt.schematic.annotation.ContentUri;
@@ -24,6 +25,7 @@ public class FavoriteMovieProvider {
         for (String path : paths){
             builder.appendPath(path);
         }
+        Log.d("TAG", builder.toString());
         return builder.build();
     }
 
@@ -32,7 +34,7 @@ public class FavoriteMovieProvider {
         @ContentUri(
                 path = Path.FAVORITE_MOVIES,
                 type = "vnd.android.cursor.dir/favorite_movie",
-                defaultSort = FavoriteMovieColumns._ID + "ASC")
+                defaultSort = FavoriteMovieColumns._ID + " ASC")
         public static final Uri CONTENT_URI = buildUri(Path.FAVORITE_MOVIES);
         public static Uri withId(long id){
             return buildUri(Path.FAVORITE_MOVIES, String.valueOf(id));
