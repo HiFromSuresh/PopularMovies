@@ -5,6 +5,7 @@ import android.content.ContentProviderOperation;
 import android.content.Context;
 import android.content.Intent;
 import android.content.OperationApplicationException;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
@@ -12,7 +13,11 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.RemoteException;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.CursorLoader;
+import android.support.v4.content.Loader;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -42,11 +47,12 @@ import retrofit2.Retrofit;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class DetailsFragment extends Fragment {
+public class DetailsFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor>{
 
     private static final String LOG_TAG = DetailsFragment.class.getSimpleName();
 
     private static final String YOUTUBE_KEY = "v";
+    private static final int CURSOR_LOADER_ID = 1;
     final String BASE_URL = "https://api.themoviedb.org/";
     final String YOUTUBE_BASE_URL = "https://www.youtube.com/watch?";
     Call<TmdbTrailersList> call;
@@ -55,6 +61,7 @@ public class DetailsFragment extends Fragment {
     LinearLayout reviewLayout;
     TextView reviewBtn;
     Button markFavoriteBtn;
+    boolean isFavorite = false;
 
     private final String OBJECT_KEY = "object_key";
     private TextView mTitleTextView;
@@ -100,6 +107,13 @@ public class DetailsFragment extends Fragment {
         mRatingTextView.setText(getVoteAverage(tmdbMovie.getVote_average()));
         mReleasedateTextView.setText(dateToYear(tmdbMovie.getRelease_date()));
 
+        checkIsfavorite();
+        if(isFavorite){
+            markFavoriteBtn.setText(R.string.remove_favorite);
+        }else{
+            markFavoriteBtn.setText(R.string.mark_as_favorite);
+        }
+
         apiKeyVAlue = BuildConfig.TMDB_API_KEY;
         addTrailers();
 
@@ -114,12 +128,21 @@ public class DetailsFragment extends Fragment {
         markFavoriteBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                favoriteBtn();
+                if(isFavorite){
+                    removeFromFavorite();
+                }else {
+                    favoriteBtn();
+                }
             }
         });
 
         return rootView;
     }
+
+    private void checkIsfavorite() {
+
+    }
+
 
     private void addTrailers() {
         Retrofit retrofit = new Retrofit.Builder()
@@ -230,6 +253,10 @@ public class DetailsFragment extends Fragment {
         return voteAverageWithTotal;
     }
 
+    private void removeFromFavorite() {
+
+    }
+
     public void favoriteBtn(){
         saveFavoritePoster();
 
@@ -295,4 +322,43 @@ public class DetailsFragment extends Fragment {
         }
     };
 
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        getLoaderManager().initLoader(CURSOR_LOADER_ID, null, this);
+        super.onActivityCreated(savedInstanceState);
+    }
+
+    @Override
+    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+        return new CursorLoader(getActivity(), FavoriteMovieProvider.FavoriteMovies.CONTENT_URI,
+                null,
+                null,
+                null,
+                null);
+    }
+
+    @Override
+    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+
+        Log.d(LOG_TAG, "onLoadFinished called");
+        String array[] = new String[data.getCount()];
+        int i = 0;
+
+        data.moveToFirst();
+        while (!data.isAfterLast()) {
+            int index = data.getColumnIndex(FavoriteMovieColumns.MOVIE_ID);
+            array[i] = data.getString(index);
+            if(Integer.parseInt(tmdbMovie.getId()) == Integer.parseInt(array[i])){
+                isFavorite = true;
+                markFavoriteBtn.setText(R.string.remove_favorite);
+            }
+            i++;
+            data.moveToNext();
+        }
+    }
+
+    @Override
+    public void onLoaderReset(Loader<Cursor> loader) {
+
+    }
 }

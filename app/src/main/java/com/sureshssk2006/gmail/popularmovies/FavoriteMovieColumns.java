@@ -16,7 +16,7 @@ public interface FavoriteMovieColumns {
     public static final String MOVIE_ID = "movie_id";
     @DataType(DataType.Type.TEXT) @NotNull
     public static final String ORIGINAL_TITLE = "original_title";
-    @DataType(DataType.Type.BLOB) //add not null later
+    @DataType(DataType.Type.TEXT) //add not null later
     public static final String POSTER = "poster";
     @DataType(DataType.Type.TEXT)
     public static final String OVERVIEW = "overview";

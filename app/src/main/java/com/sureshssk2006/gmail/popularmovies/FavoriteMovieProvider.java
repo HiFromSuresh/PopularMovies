@@ -5,6 +5,7 @@ import android.util.Log;
 
 import net.simonvt.schematic.annotation.ContentProvider;
 import net.simonvt.schematic.annotation.ContentUri;
+import net.simonvt.schematic.annotation.InexactContentUri;
 import net.simonvt.schematic.annotation.TableEndpoint;
 
 /**
@@ -36,6 +37,13 @@ public class FavoriteMovieProvider {
                 type = "vnd.android.cursor.dir/favorite_movie",
                 defaultSort = FavoriteMovieColumns._ID + " ASC")
         public static final Uri CONTENT_URI = buildUri(Path.FAVORITE_MOVIES);
+
+        @InexactContentUri(
+                name = "MOVIE_ID",
+                path = Path.FAVORITE_MOVIES + "/#",
+                type = "vnd.android.cursor.item/movie",
+                whereColumn = FavoriteMovieColumns.MOVIE_ID,
+                pathSegment = 1)
         public static Uri withId(long id){
             return buildUri(Path.FAVORITE_MOVIES, String.valueOf(id));
         }
