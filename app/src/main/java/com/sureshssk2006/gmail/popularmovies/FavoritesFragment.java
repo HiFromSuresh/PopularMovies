@@ -47,9 +47,17 @@ public class FavoritesFragment extends Fragment implements LoaderManager.LoaderC
         recyclerView.setLayoutManager(
                 new GridLayoutManager(recyclerView.getContext(), 2)
         );
+        recyclerView.setHasFixedSize(true);
 
         mFavoritesCursorAdapter = new FavoritesCursorAdapter(getActivity(), null);
         recyclerView.setAdapter(mFavoritesCursorAdapter);
+
+        mFavoritesCursorAdapter.SetOnItemClickListener(new FavoritesCursorAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(View view, int position) {
+                Toast.makeText(getContext(), "movie clicked", Toast.LENGTH_SHORT).show();
+            }
+        });
         return rootView;
     }
 

@@ -16,6 +16,7 @@ import android.widget.ImageView;
 public class FavoritesCursorAdapter extends CursorRecyclerViewAdapter<FavoritesCursorAdapter.ViewHolder> {
     Context mContext;
     ViewHolder mVh;
+    OnItemClickListener mItemClickListener;
 
     public FavoritesCursorAdapter(Context context, Cursor cursor) {
         super(context, cursor);
@@ -38,11 +39,27 @@ public class FavoritesCursorAdapter extends CursorRecyclerViewAdapter<FavoritesC
         return vh;
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder {
+    public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         public ImageView favoritesImageview;
         public ViewHolder(View itemView) {
             super(itemView);
             favoritesImageview = (ImageView) itemView.findViewById(R.id.favorites_imageview);
+            itemView.setOnClickListener(this);
         }
+
+        @Override
+        public void onClick(View v) {
+            if(mItemClickListener != null){
+                mItemClickListener.onItemClick(v, getAdapterPosition());
+            }
+        }
+    }
+
+    public interface OnItemClickListener {
+        public void onItemClick(View view, int position);
+    }
+
+    public void SetOnItemClickListener(final OnItemClickListener mItemClickListener){
+        this.mItemClickListener = mItemClickListener;
     }
 }
