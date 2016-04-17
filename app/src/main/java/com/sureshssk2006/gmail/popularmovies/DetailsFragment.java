@@ -258,11 +258,11 @@ public class DetailsFragment extends Fragment implements LoaderManager.LoaderCal
     }
 
     public void favoriteBtn(){
-        if(movieIdFromFavoriteFragment == null) {
+        if(!loadFromDB) {
             saveFavoritePoster();
         }
         String posterFilePath = Environment.getExternalStorageDirectory().getPath()
-                + "/Popular Movies/" + mTitleTextView.getText().toString() + ".jpg";
+                + "/Popular Movies/" + "f" + movieId + ".jpg";
 
         ArrayList<ContentProviderOperation> operations = new ArrayList<>();
         ContentProviderOperation.Builder builder = ContentProviderOperation.newInsert(
@@ -302,13 +302,12 @@ public class DetailsFragment extends Fragment implements LoaderManager.LoaderCal
                             Environment.getExternalStorageDirectory().getPath()
                                     + "/Popular Movies");
                     folder.mkdirs();
-                    File file = new File(folder, tmdbMovie.getOriginal_title() + ".jpg");
+                    File file = new File(folder, "f" + movieId + ".jpg");
                     Log.d(LOG_TAG, file.getPath().toString());
                     try {
                         file.createNewFile();
                         FileOutputStream ostream = new FileOutputStream(file);
                         boolean saved = bitmap.compress(Bitmap.CompressFormat.JPEG,100,ostream);
-                        Toast.makeText(getContext(), "Image saved = " + String.valueOf(saved), Toast.LENGTH_SHORT).show();
                         ostream.close();
                     }
                     catch (Exception e) {
