@@ -184,7 +184,6 @@ public class DetailsFragment extends Fragment implements LoaderManager.LoaderCal
 
             @Override
             public void onFailure(Throwable t) {
-                Toast.makeText(getContext(), "failure", Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -402,5 +401,11 @@ public class DetailsFragment extends Fragment implements LoaderManager.LoaderCal
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
 
+    }
+
+    @Override
+    public void onPause() {
+        call.cancel();
+        super.onPause();
     }
 }
