@@ -62,6 +62,7 @@ public class DetailsFragment extends Fragment implements LoaderManager.LoaderCal
     TextView reviewBtn;
     Button markFavoriteBtn;
     boolean isFavorite = false;
+    long movieId;
 
     private final String OBJECT_KEY = "object_key";
     private TextView mTitleTextView;
@@ -254,7 +255,10 @@ public class DetailsFragment extends Fragment implements LoaderManager.LoaderCal
     }
 
     private void removeFromFavorite() {
-
+        getActivity().getContentResolver().delete(FavoriteMovieProvider.FavoriteMovies.withId(movieId),
+                null, null);
+        markFavoriteBtn.setText(R.string.mark_as_favorite);
+        isFavorite = false;
     }
 
     public void favoriteBtn(){
@@ -351,6 +355,7 @@ public class DetailsFragment extends Fragment implements LoaderManager.LoaderCal
             if(Integer.parseInt(tmdbMovie.getId()) == Integer.parseInt(array[i])){
                 isFavorite = true;
                 markFavoriteBtn.setText(R.string.remove_favorite);
+                movieId =  Long.parseLong(array[i]);
             }
             i++;
             data.moveToNext();
