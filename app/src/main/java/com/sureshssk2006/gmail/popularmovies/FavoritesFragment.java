@@ -8,7 +8,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
-import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -45,7 +45,7 @@ public class FavoritesFragment extends Fragment implements LoaderManager.LoaderC
 
         RecyclerView recyclerView = (RecyclerView) rootView.findViewById(R.id.favorites_recyclerview);
         recyclerView.setLayoutManager(
-                new LinearLayoutManager(recyclerView.getContext())
+                new GridLayoutManager(recyclerView.getContext(), 2)
         );
 
         mFavoritesCursorAdapter = new FavoritesCursorAdapter(getActivity(), null);

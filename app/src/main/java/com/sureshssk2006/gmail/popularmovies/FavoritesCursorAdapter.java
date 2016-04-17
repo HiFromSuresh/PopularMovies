@@ -3,11 +3,12 @@ package com.sureshssk2006.gmail.popularmovies;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.DatabaseUtils;
+import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
+import android.widget.ImageView;
 
 /**
  * Created by Administrator on 4/15/2016.
@@ -24,9 +25,8 @@ public class FavoritesCursorAdapter extends CursorRecyclerViewAdapter<FavoritesC
     @Override
     public void onBindViewHolder(ViewHolder viewHolder, Cursor cursor) {
         DatabaseUtils.dumpCursor(cursor);
-        viewHolder.titleTextView.setText(
-                cursor.getString(cursor.getColumnIndex(FavoriteMovieColumns.ORIGINAL_TITLE))
-        );
+        int index = cursor.getColumnIndex(FavoriteMovieColumns.POSTER);
+        viewHolder.favoritesImageview.setImageURI(Uri.parse(cursor.getString(index)));
     }
 
     @Override
@@ -39,10 +39,10 @@ public class FavoritesCursorAdapter extends CursorRecyclerViewAdapter<FavoritesC
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
-        public TextView titleTextView;
+        public ImageView favoritesImageview;
         public ViewHolder(View itemView) {
             super(itemView);
-            titleTextView = (TextView) itemView.findViewById(R.id.favorites_list_txtView);
+            favoritesImageview = (ImageView) itemView.findViewById(R.id.favorites_imageview);
         }
     }
 }
