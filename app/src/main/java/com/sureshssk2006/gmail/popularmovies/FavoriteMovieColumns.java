@@ -21,7 +21,7 @@ public interface FavoriteMovieColumns {
     @DataType(DataType.Type.TEXT)
     public static final String OVERVIEW = "overview";
     @DataType(DataType.Type.TEXT)
-    public static final String TRAILERS = "trailers";
+    public static final String RELEASEYEAR = "release_year";
     @DataType(DataType.Type.TEXT)
-    public static final String REVIEWS = "reviews";
+    public static final String RATING = "rating";
 }

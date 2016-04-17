@@ -26,8 +26,10 @@ public class FavoritesCursorAdapter extends CursorRecyclerViewAdapter<FavoritesC
     @Override
     public void onBindViewHolder(ViewHolder viewHolder, Cursor cursor) {
         DatabaseUtils.dumpCursor(cursor);
-        int index = cursor.getColumnIndex(FavoriteMovieColumns.POSTER);
-        viewHolder.favoritesImageview.setImageURI(Uri.parse(cursor.getString(index)));
+        int posterIndex = cursor.getColumnIndex(FavoriteMovieColumns.POSTER);
+        int movieIdIndex = cursor.getColumnIndex(FavoriteMovieColumns.MOVIE_ID);
+        viewHolder.favoritesImageview.setImageURI(Uri.parse(cursor.getString(posterIndex)));
+        viewHolder.favoritesImageview.setTag(cursor.getString(movieIdIndex));
     }
 
     @Override

@@ -62,15 +62,19 @@ public class DetailsFragment extends Fragment implements LoaderManager.LoaderCal
     TextView reviewBtn;
     Button markFavoriteBtn;
     boolean isFavorite = false;
-    long movieId;
+    boolean loadFromDB = false;
+    long movieIdLong;
+    String movieId;
 
     private final String OBJECT_KEY = "object_key";
+    private final String KEY = "key";
     private TextView mTitleTextView;
     private ImageView mImageView;
     private TextView mOverviewTextView;
     private TextView mReleasedateTextView;
     private TextView mRatingTextView;
     TMDBmovieList.TmdbMovee tmdbMovie;
+    String movieIdFromFavoriteFragment;
     private TmdbTrailersList trailerList;
     private TmdbReviewList reviewList;
     private List<TmdbTrailersList.TmdbTrailer> trailers;
@@ -101,19 +105,25 @@ public class DetailsFragment extends Fragment implements LoaderManager.LoaderCal
         //get Data from bundle
         Bundle bundle = this.getArguments();
         tmdbMovie = bundle.getParcelable(OBJECT_KEY);
+        movieIdFromFavoriteFragment = bundle.getString(KEY);
 
-        mTitleTextView.setText(tmdbMovie.getOriginal_title());
-        Picasso.with(getContext()).load(tmdbMovie.getFullPosterpath()).into(mImageView);
-        mOverviewTextView.setText(tmdbMovie.getOverview());
-        mRatingTextView.setText(getVoteAverage(tmdbMovie.getVote_average()));
-        mReleasedateTextView.setText(dateToYear(tmdbMovie.getRelease_date()));
+        if(movieIdFromFavoriteFragment != null)loadFromDB = true;
 
-        checkIsfavorite();
-        if(isFavorite){
-            markFavoriteBtn.setText(R.string.remove_favorite);
-        }else{
-            markFavoriteBtn.setText(R.string.mark_as_favorite);
+        if(!loadFromDB) {
+            mTitleTextView.setText(tmdbMovie.getOriginal_title());
+            Picasso.with(getContext()).load(tmdbMovie.getFullPosterpath()).into(mImageView);
+            mOverviewTextView.setText(tmdbMovie.getOverview());
+            mRatingTextView.setText(tmdbMovie.getVote_average());
+            mReleasedateTextView.setText(dateToYear(tmdbMovie.getRelease_date()));
+            movieId = tmdbMovie.getId();
         }
+
+        if(loadFromDB){
+            movieId = movieIdFromFavoriteFragment;
+            isFavorite = true;
+        }
+
+
 
         apiKeyVAlue = BuildConfig.TMDB_API_KEY;
         addTrailers();
@@ -126,24 +136,10 @@ public class DetailsFragment extends Fragment implements LoaderManager.LoaderCal
             }
         });
 
-        markFavoriteBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(isFavorite){
-                    removeFromFavorite();
-                }else {
-                    favoriteBtn();
-                }
-            }
-        });
+
 
         return rootView;
     }
-
-    private void checkIsfavorite() {
-
-    }
-
 
     private void addTrailers() {
         Retrofit retrofit = new Retrofit.Builder()
@@ -152,7 +148,7 @@ public class DetailsFragment extends Fragment implements LoaderManager.LoaderCal
                 .build();
 
         TMDBService.TMDBapi tmdBapi = retrofit.create(TMDBService.TMDBapi.class);
-        call = tmdBapi.getTrailers(tmdbMovie.getId(), apiKeyVAlue);
+        call = tmdBapi.getTrailers(movieId, apiKeyVAlue);
         call.enqueue(new Callback<TmdbTrailersList>() {
             @Override
             public void onResponse(Response<TmdbTrailersList> response) {
@@ -201,7 +197,7 @@ public class DetailsFragment extends Fragment implements LoaderManager.LoaderCal
 
         TMDBService.TMDBapi tmdBapi = retrofit.create(TMDBService.TMDBapi.class);
 
-        Call<TmdbReviewList> call = tmdBapi.getReviews(tmdbMovie.getId(), apiKeyVAlue);
+        Call<TmdbReviewList> call = tmdBapi.getReviews(movieId, apiKeyVAlue);
         call.enqueue(new Callback<TmdbReviewList>() {
             @Override
             public void onResponse(Response<TmdbReviewList> response) {
@@ -249,31 +245,34 @@ public class DetailsFragment extends Fragment implements LoaderManager.LoaderCal
         return releaseDateYear;
     }
 
-    public String getVoteAverage(String voteAverage) {
+    /*public String getVoteAverage(String voteAverage) {
         String voteAverageWithTotal = voteAverage + "/10";
         return voteAverageWithTotal;
-    }
+    }*/
 
     private void removeFromFavorite() {
-        getActivity().getContentResolver().delete(FavoriteMovieProvider.FavoriteMovies.withId(movieId),
+        getActivity().getContentResolver().delete(FavoriteMovieProvider.FavoriteMovies.withId(movieIdLong),
                 null, null);
         markFavoriteBtn.setText(R.string.mark_as_favorite);
         isFavorite = false;
     }
 
     public void favoriteBtn(){
-        saveFavoritePoster();
-
+        if(movieIdFromFavoriteFragment == null) {
+            saveFavoritePoster();
+        }
         String posterFilePath = Environment.getExternalStorageDirectory().getPath()
-                + "/Popular Movies/" +tmdbMovie.getOriginal_title() + ".jpg";
+                + "/Popular Movies/" + mTitleTextView.getText().toString() + ".jpg";
 
         ArrayList<ContentProviderOperation> operations = new ArrayList<>();
         ContentProviderOperation.Builder builder = ContentProviderOperation.newInsert(
                 FavoriteMovieProvider.FavoriteMovies.CONTENT_URI);
-        builder.withValue(FavoriteMovieColumns.MOVIE_ID, tmdbMovie.getId());
-        builder.withValue(FavoriteMovieColumns.ORIGINAL_TITLE, tmdbMovie.getOriginal_title());
-        builder.withValue(FavoriteMovieColumns.OVERVIEW, tmdbMovie.getOverview());
+        builder.withValue(FavoriteMovieColumns.MOVIE_ID, movieId);
+        builder.withValue(FavoriteMovieColumns.ORIGINAL_TITLE, mTitleTextView.getText().toString());
+        builder.withValue(FavoriteMovieColumns.OVERVIEW, mOverviewTextView.getText().toString());
         builder.withValue(FavoriteMovieColumns.POSTER, posterFilePath);
+        builder.withValue(FavoriteMovieColumns.RELEASEYEAR, mReleasedateTextView.getText().toString());
+        builder.withValue(FavoriteMovieColumns.RATING, mRatingTextView.getText().toString());
         operations.add(builder.build());
 
         try {
@@ -283,6 +282,9 @@ public class DetailsFragment extends Fragment implements LoaderManager.LoaderCal
         } catch (OperationApplicationException e) {
             e.printStackTrace();
         }
+
+        isFavorite = true;
+
     }
 
     private void saveFavoritePoster() {
@@ -305,7 +307,8 @@ public class DetailsFragment extends Fragment implements LoaderManager.LoaderCal
                     try {
                         file.createNewFile();
                         FileOutputStream ostream = new FileOutputStream(file);
-                        bitmap.compress(Bitmap.CompressFormat.JPEG,100,ostream);
+                        boolean saved = bitmap.compress(Bitmap.CompressFormat.JPEG,100,ostream);
+                        Toast.makeText(getContext(), "Image saved = " + String.valueOf(saved), Toast.LENGTH_SHORT).show();
                         ostream.close();
                     }
                     catch (Exception e) {
@@ -334,7 +337,8 @@ public class DetailsFragment extends Fragment implements LoaderManager.LoaderCal
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        return new CursorLoader(getActivity(), FavoriteMovieProvider.FavoriteMovies.CONTENT_URI,
+        movieIdLong = Long.parseLong(movieId);
+        return new CursorLoader(getActivity(), FavoriteMovieProvider.FavoriteMovies.withId(movieIdLong),
                 null,
                 null,
                 null,
@@ -345,21 +349,55 @@ public class DetailsFragment extends Fragment implements LoaderManager.LoaderCal
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
 
         Log.d(LOG_TAG, "onLoadFinished called");
-        String array[] = new String[data.getCount()];
+
+
+        if(data != null && data.moveToFirst()) {
+            if (loadFromDB) {
+                mTitleTextView.setText(data.getString(data.getColumnIndex(FavoriteMovieColumns.ORIGINAL_TITLE)));
+                mImageView.setImageURI(Uri.parse(data.getString(data.getColumnIndex(FavoriteMovieColumns.POSTER))));
+                mOverviewTextView.setText(data.getString(data.getColumnIndex(FavoriteMovieColumns.OVERVIEW)));
+                String strRating = data.getString(data.getColumnIndex(FavoriteMovieColumns.RATING));
+                mRatingTextView.setText(strRating);
+                String strYear = dateToYear(data.getString(data.getColumnIndex(FavoriteMovieColumns.RELEASEYEAR)));
+                mReleasedateTextView.setText(strYear);
+            }
+            if (Integer.parseInt(movieId) == Integer.parseInt(data.getString(data.getColumnIndex(FavoriteMovieColumns.MOVIE_ID)))) {
+                isFavorite = true;
+            }
+        }
+
+        if(isFavorite){
+            markFavoriteBtn.setText(R.string.remove_favorite);
+        }else{
+            markFavoriteBtn.setText(R.string.mark_as_favorite);
+        }
+
+        markFavoriteBtn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if(isFavorite){
+                        removeFromFavorite();
+                    }else {
+                        favoriteBtn();
+                    }
+                }
+            });
+
+        /*String array[] = new String[data.getCount()];
         int i = 0;
 
         data.moveToFirst();
         while (!data.isAfterLast()) {
             int index = data.getColumnIndex(FavoriteMovieColumns.MOVIE_ID);
             array[i] = data.getString(index);
-            if(Integer.parseInt(tmdbMovie.getId()) == Integer.parseInt(array[i])){
+            if(Integer.parseInt(movieId) == Integer.parseInt(array[i])){
                 isFavorite = true;
                 markFavoriteBtn.setText(R.string.remove_favorite);
-                movieId =  Long.parseLong(array[i]);
+                movieIdLong =  Long.parseLong(array[i]);
             }
             i++;
             data.moveToNext();
-        }
+        }*/
     }
 
     @Override

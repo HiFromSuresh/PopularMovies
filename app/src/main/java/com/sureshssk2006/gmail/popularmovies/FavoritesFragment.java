@@ -20,6 +20,7 @@ public class FavoritesFragment extends Fragment implements LoaderManager.LoaderC
 
 
     private static final int CURSOR_LOADER_ID = 0;
+    private static final String KEY = "key";
     private FavoritesCursorAdapter mFavoritesCursorAdapter;
 
     public FavoritesFragment() {
@@ -56,6 +57,16 @@ public class FavoritesFragment extends Fragment implements LoaderManager.LoaderC
             @Override
             public void onItemClick(View view, int position) {
                 Toast.makeText(getContext(), "movie clicked", Toast.LENGTH_SHORT).show();
+                String movieId = (String) view.getTag();
+                DetailsFragment detailsFragment = new DetailsFragment();
+                Bundle args = new Bundle();
+                args.putString(KEY, movieId);
+                detailsFragment.setArguments(args);
+                getFragmentManager()
+                        .beginTransaction()
+                        .replace(R.id.container, detailsFragment)
+                        .addToBackStack(null)
+                        .commit();
             }
         });
         return rootView;
