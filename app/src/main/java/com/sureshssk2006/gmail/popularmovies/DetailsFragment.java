@@ -18,9 +18,14 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
+import android.support.v4.view.MenuItemCompat;
+import android.support.v7.widget.ShareActionProvider;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -51,6 +56,7 @@ public class DetailsFragment extends Fragment implements LoaderManager.LoaderCal
 
     private static final String LOG_TAG = DetailsFragment.class.getSimpleName();
 
+    private ShareActionProvider mShareActionProvider;
     private static final String YOUTUBE_KEY = "v";
     private static final int CURSOR_LOADER_ID = 1;
     final String BASE_URL = "https://api.themoviedb.org/";
@@ -81,9 +87,27 @@ public class DetailsFragment extends Fragment implements LoaderManager.LoaderCal
     private List<TmdbReviewList.TmdbReview> reviews;
 
     public DetailsFragment() {
-        // Required empty public constructor
+        setHasOptionsMenu(true);
     }
 
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        inflater.inflate(R.menu.detailfragment, menu);
+
+        // Retrieve the share menu item
+        MenuItem menuItem = menu.findItem(R.id.action_share);
+
+        // Get the provider and hold onto it to set/change the share intent.
+        mShareActionProvider = (ShareActionProvider) MenuItemCompat.getActionProvider(menuItem);
+
+        mShareActionProvider.setShareIntent(createShareVideoIntent());
+
+    }
+
+    private Intent createShareVideoIntent() {
+        return null;
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -178,6 +202,17 @@ public class DetailsFragment extends Fragment implements LoaderManager.LoaderCal
                         }
                     });
 
+                    if(i == 0){
+                        Uri shareUri = Uri.parse(YOUTUBE_BASE_URL).buildUpon()
+                                .appendQueryParameter(YOUTUBE_KEY, t.getKey())
+                                .build();
+                        String shareUrl = shareUri.toString();
+                        Intent shareIntent = new Intent(Intent.ACTION_SEND);
+                        //shareIntent.setType("video/x-flv");
+                        shareIntent.setType("text/*");
+                        shareIntent.putExtra(Intent.EXTRA_TEXT, shareUrl);
+                        mShareActionProvider.setShareIntent(shareIntent);
+                    }
                 }
 
             }
