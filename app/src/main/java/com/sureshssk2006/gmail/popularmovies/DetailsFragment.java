@@ -67,7 +67,7 @@ public class DetailsFragment extends Fragment implements LoaderManager.LoaderCal
     String movieId;
 
     private final String OBJECT_KEY = "object_key";
-    private final String KEY = "key";
+    private final String FAVORITEKEY = "favorite_key";
     private TextView mTitleTextView;
     private ImageView mImageView;
     private TextView mOverviewTextView;
@@ -105,7 +105,7 @@ public class DetailsFragment extends Fragment implements LoaderManager.LoaderCal
         //get Data from bundle
         Bundle bundle = this.getArguments();
         tmdbMovie = bundle.getParcelable(OBJECT_KEY);
-        movieIdFromFavoriteFragment = bundle.getString(KEY);
+        movieIdFromFavoriteFragment = bundle.getString(FAVORITEKEY);
 
         if(movieIdFromFavoriteFragment != null)loadFromDB = true;
 

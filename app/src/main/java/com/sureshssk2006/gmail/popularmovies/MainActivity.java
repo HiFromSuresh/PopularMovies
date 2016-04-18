@@ -3,7 +3,6 @@ package com.sureshssk2006.gmail.popularmovies;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity implements MovieListFragment.Callbackk,
         MovieListFragment.FavoritesCallback,
@@ -13,6 +12,8 @@ public class MainActivity extends AppCompatActivity implements MovieListFragment
     private static final String KEY = "key";
     private static final String DETAILFRAGMENT_TAG = "DFTAG";
     private static final String ACTIVITYKEY = "activity_key";
+    private static final String FAVORITEKEY = "favorite_key";
+    private static final String FAVORITEACTIVITYKEY = "favorite_activity_key";
     private boolean mTwoPane;
 
     @Override
@@ -67,7 +68,20 @@ public class MainActivity extends AppCompatActivity implements MovieListFragment
 
     @Override
     public void onFavoriteItemClicked(String id) {
-        Toast.makeText(this, "movie clicked", Toast.LENGTH_SHORT).show();
+        if(mTwoPane){
+            Bundle args = new Bundle();
+            args.putString(FAVORITEKEY, id);
 
+            DetailsFragment detailsFragment = new DetailsFragment();
+            detailsFragment.setArguments(args);
+
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.details_container, detailsFragment, DETAILFRAGMENT_TAG)
+                    .commit();
+        }else{
+            Intent intent = new Intent(this, DetailsActivity.class);
+            intent.putExtra(FAVORITEACTIVITYKEY, id);
+            startActivity(intent);
+        }
     }
 }
