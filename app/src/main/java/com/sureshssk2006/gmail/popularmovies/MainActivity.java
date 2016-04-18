@@ -3,8 +3,11 @@ package com.sureshssk2006.gmail.popularmovies;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.widget.Toast;
 
-public class MainActivity extends AppCompatActivity implements MovieListFragment.Callbackk, MovieListFragment.FavoritesCallback {
+public class MainActivity extends AppCompatActivity implements MovieListFragment.Callbackk,
+        MovieListFragment.FavoritesCallback,
+        FavoritesFragment.FavoritesItemCallback{
 
     private static final String DETAIL_FRAG = "DFTAG";
     private static final String KEY = "key";
@@ -61,4 +64,10 @@ public class MainActivity extends AppCompatActivity implements MovieListFragment
                     .addToBackStack(null)
                     .commit();
         }
+
+    @Override
+    public void onFavoriteItemClicked(String id) {
+        Toast.makeText(this, "movie clicked", Toast.LENGTH_SHORT).show();
+
+    }
 }

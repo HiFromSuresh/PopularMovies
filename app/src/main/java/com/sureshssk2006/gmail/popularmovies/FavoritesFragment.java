@@ -27,6 +27,10 @@ public class FavoritesFragment extends Fragment implements LoaderManager.LoaderC
         // Required empty public constructor
     }
 
+    public interface FavoritesItemCallback{
+        public void onFavoriteItemClicked(String id);
+    }
+
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         Cursor cursor = getActivity().getContentResolver().query(FavoriteMovieProvider.FavoriteMovies.CONTENT_URI,
@@ -56,9 +60,9 @@ public class FavoritesFragment extends Fragment implements LoaderManager.LoaderC
         mFavoritesCursorAdapter.SetOnItemClickListener(new FavoritesCursorAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(View view, int position) {
-                Toast.makeText(getContext(), "movie clicked", Toast.LENGTH_SHORT).show();
                 String movieId = (String) view.getTag();
-                DetailsFragment detailsFragment = new DetailsFragment();
+                ((FavoritesItemCallback)getActivity()).onFavoriteItemClicked(movieId);
+                /*DetailsFragment detailsFragment = new DetailsFragment();
                 Bundle args = new Bundle();
                 args.putString(KEY, movieId);
                 detailsFragment.setArguments(args);
@@ -66,7 +70,7 @@ public class FavoritesFragment extends Fragment implements LoaderManager.LoaderC
                         .beginTransaction()
                         .replace(R.id.details_container, detailsFragment)
                         .addToBackStack(null)
-                        .commit();
+                        .commit();*/
             }
         });
         return rootView;
