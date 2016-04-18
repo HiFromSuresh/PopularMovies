@@ -4,7 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 
-public class MainActivity extends AppCompatActivity implements MovieListFragment.Callbackk {
+public class MainActivity extends AppCompatActivity implements MovieListFragment.Callbackk, MovieListFragment.FavoritesCallback {
 
     private static final String DETAIL_FRAG = "DFTAG";
     private static final String KEY = "key";
@@ -17,13 +17,18 @@ public class MainActivity extends AppCompatActivity implements MovieListFragment
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        if(findViewById(R.id.details_container) != null){
+        if (savedInstanceState == null) {
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.main_container, new MovieListFragment())
+                    .commit();
+        }
+        if (findViewById(R.id.details_container) != null) {
             mTwoPane = true;
-            if(savedInstanceState == null){
+            if (savedInstanceState == null) {
                 getSupportFragmentManager().beginTransaction()
                         .replace(R.id.details_container, new DetailsFragment(), DETAIL_FRAG)
                         .commit();
-            }else {
+            } else {
                 mTwoPane = false;
             }
         }
@@ -48,4 +53,12 @@ public class MainActivity extends AppCompatActivity implements MovieListFragment
             startActivity(intent);
         }
     }
+
+    @Override
+    public void onFavoriteSelected() {
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.main_container, new FavoritesFragment())
+                    .addToBackStack(null)
+                    .commit();
+        }
 }

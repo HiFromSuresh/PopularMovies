@@ -54,6 +54,10 @@ public class MovieListFragment extends Fragment {
         public void onItemSelected(TMDBmovieList.TmdbMovee movie);
     }
 
+    public interface FavoritesCallback {
+        public void onFavoriteSelected();
+    }
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -88,12 +92,14 @@ public class MovieListFragment extends Fragment {
 
         }
         if(id == R.id.favorite){
-            FavoritesFragment favoritesFragment = new FavoritesFragment();
+            ((FavoritesCallback)getActivity())
+                    .onFavoriteSelected();
+            /*FavoritesFragment favoritesFragment = new FavoritesFragment();
             getFragmentManager()
                     .beginTransaction()
-                    .replace(R.id.details_container, favoritesFragment)
+                    .replace(R.id.main_container, favoritesFragment)
                     .addToBackStack(null)
-                    .commit();
+                    .commit();*/
         }
         return super.onOptionsItemSelected(item);
     }
