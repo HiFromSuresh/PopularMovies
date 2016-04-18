@@ -48,24 +48,30 @@
                     <TextView
                         android:id="@+id/details_release_date"
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"
+                        android:layout_height="0dp"
                         android:layout_weight="1"
-                        android:gravity="center_vertical"
+                        android:gravity="center"
+                        android:layout_gravity="center"
                         android:textSize="24sp" />
 
                     <Button
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"
+                        android:layout_height="0dp"
+                        android:textStyle="bold"
+                        android:background="@android:color/transparent"
+                        android:textColor="#009100"
                         android:layout_weight="1"
                         android:gravity="center"
+                        android:layout_gravity="center"
                         android:id="@+id/btn_favorite"/>
 
                     <TextView
                         android:id="@+id/details_rating"
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"
+                        android:layout_height="0dp"
                         android:layout_weight="1"
-                        android:gravity="center_vertical"
+                        android:gravity="center"
+                        android:layout_gravity="center"
                         android:textColor="@android:color/black"
                         android:textSize="12sp"
                         android:textStyle="bold" />
