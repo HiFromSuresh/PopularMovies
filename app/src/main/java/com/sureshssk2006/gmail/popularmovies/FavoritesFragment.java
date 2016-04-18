@@ -49,9 +49,11 @@ public class FavoritesFragment extends Fragment implements LoaderManager.LoaderC
         View rootView = inflater.inflate(R.layout.fragment_favorites, container, false);
 
         RecyclerView recyclerView = (RecyclerView) rootView.findViewById(R.id.favorites_recyclerview);
-        recyclerView.setLayoutManager(
-                new GridLayoutManager(recyclerView.getContext(), 2)
-        );
+        if(getResources().getConfiguration().orientation == 1) {
+            recyclerView.setLayoutManager(new GridLayoutManager(getContext(), 2));
+        }else{
+            recyclerView.setLayoutManager(new GridLayoutManager(getContext(), 3));
+        }
         recyclerView.setHasFixedSize(true);
 
         mFavoritesCursorAdapter = new FavoritesCursorAdapter(getActivity(), null);

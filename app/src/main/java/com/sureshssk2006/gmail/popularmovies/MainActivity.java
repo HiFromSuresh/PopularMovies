@@ -9,7 +9,7 @@ public class MainActivity extends AppCompatActivity implements MovieListFragment
         FavoritesFragment.FavoritesItemCallback{
 
     private static final String DETAIL_FRAG = "DFTAG";
-    private static final String KEY = "key";
+    private static final String OBJECT_KEY = "object_key";
     private static final String DETAILFRAGMENT_TAG = "DFTAG";
     private static final String ACTIVITYKEY = "activity_key";
     private static final String FAVORITEKEY = "favorite_key";
@@ -28,13 +28,13 @@ public class MainActivity extends AppCompatActivity implements MovieListFragment
         }
         if (findViewById(R.id.details_container) != null) {
             mTwoPane = true;
-            if (savedInstanceState == null) {
+            /*if (savedInstanceState == null) {
                 getSupportFragmentManager().beginTransaction()
                         .replace(R.id.details_container, new DetailsFragment(), DETAIL_FRAG)
                         .commit();
-            } else {
-                mTwoPane = false;
-            }
+            }*/
+            }else {
+            mTwoPane = false;
         }
     }
 
@@ -43,7 +43,7 @@ public class MainActivity extends AppCompatActivity implements MovieListFragment
         if (mTwoPane) {
 
             Bundle args = new Bundle();
-            args.putParcelable(KEY, movie);
+            args.putParcelable(OBJECT_KEY, movie);
 
             DetailsFragment detailsFragment = new DetailsFragment();
             detailsFragment.setArguments(args);
