@@ -50,6 +50,10 @@ public class MovieListFragment extends Fragment {
         // Required empty public constructor
     }
 
+    public interface Callbackk {
+        public void onItemSelected(TMDBmovieList.TmdbMovee movie);
+    }
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -87,7 +91,7 @@ public class MovieListFragment extends Fragment {
             FavoritesFragment favoritesFragment = new FavoritesFragment();
             getFragmentManager()
                     .beginTransaction()
-                    .replace(R.id.container, favoritesFragment)
+                    .replace(R.id.details_container, favoritesFragment)
                     .addToBackStack(null)
                     .commit();
         }
@@ -157,15 +161,17 @@ public class MovieListFragment extends Fragment {
             @Override
             public void onItemClick(View view, int position) {
                 TMDBmovieList.TmdbMovee movie = items.get(position);
-                DetailsFragment detailsFragment = new DetailsFragment();
+                ((Callbackk)getActivity())
+                        .onItemSelected(movie);
+                /*DetailsFragment detailsFragment = new DetailsFragment();
                 Bundle args = new Bundle();
                 args.putParcelable(OBJECT_KEY, movie);
                 detailsFragment.setArguments(args);
                 getFragmentManager()
                         .beginTransaction()
-                        .replace(R.id.container, detailsFragment)
+                        .replace(R.id.details_container, detailsFragment)
                         .addToBackStack(null)
-                        .commit();
+                        .commit();*/
             }
         });
 

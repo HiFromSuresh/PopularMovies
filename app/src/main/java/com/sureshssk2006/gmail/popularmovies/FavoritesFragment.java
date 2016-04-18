@@ -64,7 +64,7 @@ public class FavoritesFragment extends Fragment implements LoaderManager.LoaderC
                 detailsFragment.setArguments(args);
                 getFragmentManager()
                         .beginTransaction()
-                        .replace(R.id.container, detailsFragment)
+                        .replace(R.id.details_container, detailsFragment)
                         .addToBackStack(null)
                         .commit();
             }
