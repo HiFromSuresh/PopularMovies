@@ -52,7 +52,7 @@ import retrofit2.Retrofit;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class DetailsFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor>{
+public class DetailsFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
 
     private static final String LOG_TAG = DetailsFragment.class.getSimpleName();
 
@@ -131,9 +131,9 @@ public class DetailsFragment extends Fragment implements LoaderManager.LoaderCal
         tmdbMovie = bundle.getParcelable(OBJECT_KEY);
         movieIdFromFavoriteFragment = bundle.getString(FAVORITEKEY);
 
-        if(movieIdFromFavoriteFragment != null)loadFromDB = true;
+        if (movieIdFromFavoriteFragment != null) loadFromDB = true;
 
-        if(!loadFromDB) {
+        if (!loadFromDB) {
             mTitleTextView.setText(tmdbMovie.getOriginal_title());
             Picasso.with(getContext()).load(tmdbMovie.getFullPosterpath()).into(mImageView);
             mOverviewTextView.setText(tmdbMovie.getOverview());
@@ -142,11 +142,10 @@ public class DetailsFragment extends Fragment implements LoaderManager.LoaderCal
             movieId = tmdbMovie.getId();
         }
 
-        if(loadFromDB){
+        if (loadFromDB) {
             movieId = movieIdFromFavoriteFragment;
             isFavorite = true;
         }
-
 
 
         apiKeyVAlue = BuildConfig.TMDB_API_KEY;
@@ -159,7 +158,6 @@ public class DetailsFragment extends Fragment implements LoaderManager.LoaderCal
                 reviewBtn.setClickable(false);
             }
         });
-
 
 
         return rootView;
@@ -202,7 +200,7 @@ public class DetailsFragment extends Fragment implements LoaderManager.LoaderCal
                         }
                     });
 
-                    if(i == 0){
+                    if (i == 0) {
                         Uri shareUri = Uri.parse(YOUTUBE_BASE_URL).buildUpon()
                                 .appendQueryParameter(YOUTUBE_KEY, t.getKey())
                                 .build();
@@ -291,8 +289,8 @@ public class DetailsFragment extends Fragment implements LoaderManager.LoaderCal
         isFavorite = false;
     }
 
-    public void favoriteBtn(){
-        if(!loadFromDB) {
+    public void favoriteBtn() {
+        if (!loadFromDB) {
             saveFavoritePoster();
         }
         String posterFilePath = Environment.getExternalStorageDirectory().getPath()
@@ -341,10 +339,9 @@ public class DetailsFragment extends Fragment implements LoaderManager.LoaderCal
                     try {
                         file.createNewFile();
                         FileOutputStream ostream = new FileOutputStream(file);
-                        boolean saved = bitmap.compress(Bitmap.CompressFormat.JPEG,100,ostream);
+                        boolean saved = bitmap.compress(Bitmap.CompressFormat.JPEG, 100, ostream);
                         ostream.close();
-                    }
-                    catch (Exception e) {
+                    } catch (Exception e) {
                         e.printStackTrace();
                     }
                 }
@@ -384,7 +381,7 @@ public class DetailsFragment extends Fragment implements LoaderManager.LoaderCal
         Log.d(LOG_TAG, "onLoadFinished called");
 
 
-        if(data != null && data.moveToFirst()) {
+        if (data != null && data.moveToFirst()) {
             if (loadFromDB) {
                 mTitleTextView.setText(data.getString(data.getColumnIndex(FavoriteMovieColumns.ORIGINAL_TITLE)));
                 mImageView.setImageURI(Uri.parse(data.getString(data.getColumnIndex(FavoriteMovieColumns.POSTER))));
@@ -399,22 +396,22 @@ public class DetailsFragment extends Fragment implements LoaderManager.LoaderCal
             }
         }
 
-        if(isFavorite){
+        if (isFavorite) {
             markFavoriteBtn.setText(R.string.remove_favorite);
-        }else{
+        } else {
             markFavoriteBtn.setText(R.string.mark_as_favorite);
         }
 
         markFavoriteBtn.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if(isFavorite){
-                        removeFromFavorite();
-                    }else {
-                        favoriteBtn();
-                    }
+            @Override
+            public void onClick(View v) {
+                if (isFavorite) {
+                    removeFromFavorite();
+                } else {
+                    favoriteBtn();
                 }
-            });
+            }
+        });
 
         /*String array[] = new String[data.getCount()];
         int i = 0;
@@ -442,5 +439,12 @@ public class DetailsFragment extends Fragment implements LoaderManager.LoaderCal
     public void onPause() {
         call.cancel();
         super.onPause();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        Log.d(LOG_TAG, "resume called");
+        getLoaderManager().restartLoader(CURSOR_LOADER_ID, null, this);
     }
 }

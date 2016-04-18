@@ -20,7 +20,7 @@ public class FavoritesCursorAdapter extends CursorRecyclerViewAdapter<FavoritesC
 
     public FavoritesCursorAdapter(Context context, Cursor cursor) {
         super(context, cursor);
-        mContext =context;
+        mContext = context;
     }
 
     @Override
@@ -43,6 +43,7 @@ public class FavoritesCursorAdapter extends CursorRecyclerViewAdapter<FavoritesC
 
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         public ImageView favoritesImageview;
+
         public ViewHolder(View itemView) {
             super(itemView);
             favoritesImageview = (ImageView) itemView.findViewById(R.id.favorites_imageview);
@@ -51,7 +52,7 @@ public class FavoritesCursorAdapter extends CursorRecyclerViewAdapter<FavoritesC
 
         @Override
         public void onClick(View v) {
-            if(mItemClickListener != null){
+            if (mItemClickListener != null) {
                 mItemClickListener.onItemClick(v, getAdapterPosition());
             }
         }
@@ -61,7 +62,7 @@ public class FavoritesCursorAdapter extends CursorRecyclerViewAdapter<FavoritesC
         public void onItemClick(View view, int position);
     }
 
-    public void SetOnItemClickListener(final OnItemClickListener mItemClickListener){
+    public void SetOnItemClickListener(final OnItemClickListener mItemClickListener) {
         this.mItemClickListener = mItemClickListener;
     }
 }

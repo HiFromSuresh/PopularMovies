@@ -16,7 +16,7 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 
-public class FavoritesFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor>{
+public class FavoritesFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
 
 
     private static final int CURSOR_LOADER_ID = 0;
@@ -27,7 +27,7 @@ public class FavoritesFragment extends Fragment implements LoaderManager.LoaderC
         // Required empty public constructor
     }
 
-    public interface FavoritesItemCallback{
+    public interface FavoritesItemCallback {
         public void onFavoriteItemClicked(String id);
     }
 
@@ -35,7 +35,7 @@ public class FavoritesFragment extends Fragment implements LoaderManager.LoaderC
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         Cursor cursor = getActivity().getContentResolver().query(FavoriteMovieProvider.FavoriteMovies.CONTENT_URI,
                 null, null, null, null);
-        if (cursor == null || cursor.getCount() == 0){
+        if (cursor == null || cursor.getCount() == 0) {
             Toast.makeText(getContext(), "No favorite movies added yet", Toast.LENGTH_LONG).show();
         }
 
@@ -49,9 +49,9 @@ public class FavoritesFragment extends Fragment implements LoaderManager.LoaderC
         View rootView = inflater.inflate(R.layout.fragment_favorites, container, false);
 
         RecyclerView recyclerView = (RecyclerView) rootView.findViewById(R.id.favorites_recyclerview);
-        if(getResources().getConfiguration().orientation == 1) {
+        if (getResources().getConfiguration().orientation == 1) {
             recyclerView.setLayoutManager(new GridLayoutManager(getContext(), 2));
-        }else{
+        } else {
             recyclerView.setLayoutManager(new GridLayoutManager(getContext(), 3));
         }
         recyclerView.setHasFixedSize(true);
@@ -63,16 +63,7 @@ public class FavoritesFragment extends Fragment implements LoaderManager.LoaderC
             @Override
             public void onItemClick(View view, int position) {
                 String movieId = (String) view.getTag();
-                ((FavoritesItemCallback)getActivity()).onFavoriteItemClicked(movieId);
-                /*DetailsFragment detailsFragment = new DetailsFragment();
-                Bundle args = new Bundle();
-                args.putString(KEY, movieId);
-                detailsFragment.setArguments(args);
-                getFragmentManager()
-                        .beginTransaction()
-                        .replace(R.id.details_container, detailsFragment)
-                        .addToBackStack(null)
-                        .commit();*/
+                ((FavoritesItemCallback) getActivity()).onFavoriteItemClicked(movieId);
             }
         });
         return rootView;
@@ -83,6 +74,7 @@ public class FavoritesFragment extends Fragment implements LoaderManager.LoaderC
         super.onResume();
         getLoaderManager().restartLoader(CURSOR_LOADER_ID, null, this);
     }
+
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
         return new CursorLoader(getActivity(), FavoriteMovieProvider.FavoriteMovies.CONTENT_URI,

@@ -6,7 +6,7 @@ import android.support.v7.app.AppCompatActivity;
 
 public class MainActivity extends AppCompatActivity implements MovieListFragment.Callbackk,
         MovieListFragment.FavoritesCallback,
-        FavoritesFragment.FavoritesItemCallback{
+        FavoritesFragment.FavoritesItemCallback {
 
     private static final String DETAIL_FRAG = "DFTAG";
     private static final String OBJECT_KEY = "object_key";
@@ -33,7 +33,7 @@ public class MainActivity extends AppCompatActivity implements MovieListFragment
                         .replace(R.id.details_container, new DetailsFragment(), DETAIL_FRAG)
                         .commit();
             }*/
-            }else {
+        } else {
             mTwoPane = false;
         }
     }
@@ -60,15 +60,15 @@ public class MainActivity extends AppCompatActivity implements MovieListFragment
 
     @Override
     public void onFavoriteSelected() {
-            getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.main_container, new FavoritesFragment())
-                    .addToBackStack(null)
-                    .commit();
-        }
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.main_container, new FavoritesFragment())
+                .addToBackStack(null)
+                .commit();
+    }
 
     @Override
     public void onFavoriteItemClicked(String id) {
-        if(mTwoPane){
+        if (mTwoPane) {
             Bundle args = new Bundle();
             args.putString(FAVORITEKEY, id);
 
@@ -78,7 +78,7 @@ public class MainActivity extends AppCompatActivity implements MovieListFragment
             getSupportFragmentManager().beginTransaction()
                     .replace(R.id.details_container, detailsFragment, DETAILFRAGMENT_TAG)
                     .commit();
-        }else{
+        } else {
             Intent intent = new Intent(this, DetailsActivity.class);
             intent.putExtra(FAVORITEACTIVITYKEY, id);
             startActivity(intent);

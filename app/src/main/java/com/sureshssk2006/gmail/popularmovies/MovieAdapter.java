@@ -53,14 +53,15 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder> 
 
     @Override
     public int getItemCount() {
-        if (movieArrayList == null){
+        if (movieArrayList == null) {
             return -1;
         }
         return movieArrayList.size();
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
+    public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         public ImageView posterView;
+
         public ViewHolder(View itemView) {
             super(itemView);
             posterView = (ImageView) itemView.findViewById(R.id.image_view);
@@ -69,7 +70,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder> 
 
         @Override
         public void onClick(View v) {
-            if(mItemClickListener != null){
+            if (mItemClickListener != null) {
                 mItemClickListener.onItemClick(v, getAdapterPosition());
             }
         }
@@ -79,11 +80,11 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder> 
         public void onItemClick(View view, int position);
     }
 
-    public void SetOnItemClickListener(final OnItemClickListener mItemClickListener){
+    public void SetOnItemClickListener(final OnItemClickListener mItemClickListener) {
         this.mItemClickListener = mItemClickListener;
     }
 
-    public void swapList(List<TMDBmovieList.TmdbMovee> items){
+    public void swapList(List<TMDBmovieList.TmdbMovee> items) {
         this.movieArrayList = items;
         notifyDataSetChanged();
     }

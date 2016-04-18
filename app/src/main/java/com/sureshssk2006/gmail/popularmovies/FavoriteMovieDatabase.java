@@ -9,11 +9,12 @@ import net.simonvt.schematic.annotation.Table;
 @Database(version = FavoriteMovieDatabase.VERSION)
 public final class FavoriteMovieDatabase {
 
-    private FavoriteMovieDatabase(){}
+    private FavoriteMovieDatabase() {
+    }
 
     public static final int VERSION = 1;
 
-        @Table(FavoriteMovieColumns.class)
-        public static final String FAVORITE_MOVIES = "favorite_movies";
+    @Table(FavoriteMovieColumns.class)
+    public static final String FAVORITE_MOVIES = "favorite_movies";
 
 }

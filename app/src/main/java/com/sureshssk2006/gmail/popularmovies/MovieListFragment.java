@@ -91,8 +91,8 @@ public class MovieListFragment extends Fragment {
             }
 
         }
-        if(id == R.id.favorite){
-            ((FavoritesCallback)getActivity())
+        if (id == R.id.favorite) {
+            ((FavoritesCallback) getActivity())
                     .onFavoriteSelected();
             /*FavoritesFragment favoritesFragment = new FavoritesFragment();
             getFragmentManager()
@@ -155,9 +155,9 @@ public class MovieListFragment extends Fragment {
 
         //Set recyclerView layout manager to have two columns if in portrait mode
         //else set three columns for landscape mode
-        if(getResources().getConfiguration().orientation == 1) {
+        if (getResources().getConfiguration().orientation == 1) {
             recyclerView.setLayoutManager(new GridLayoutManager(getContext(), 2));
-        }else{
+        } else {
             recyclerView.setLayoutManager(new GridLayoutManager(getContext(), 3));
         }
 
@@ -167,7 +167,7 @@ public class MovieListFragment extends Fragment {
             @Override
             public void onItemClick(View view, int position) {
                 TMDBmovieList.TmdbMovee movie = items.get(position);
-                ((Callbackk)getActivity())
+                ((Callbackk) getActivity())
                         .onItemSelected(movie);
                 /*DetailsFragment detailsFragment = new DetailsFragment();
                 Bundle args = new Bundle();
@@ -181,9 +181,9 @@ public class MovieListFragment extends Fragment {
             }
         });
 
-        if(savedInstanceState == null) {
+        if (savedInstanceState == null) {
             LoadPosters(sortByValue);
-        }else{
+        } else {
             items = savedInstanceState.getParcelableArrayList(LIST_STATE_KEY);
             movieAdapter.swapList(items);
         }

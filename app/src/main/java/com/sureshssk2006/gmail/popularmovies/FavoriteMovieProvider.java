@@ -17,13 +17,13 @@ public class FavoriteMovieProvider {
     public static final String AUTHORITY = "com.sureshssk2006.gmail.popularmovies";
     static final Uri BASE_CONTENT_URI = Uri.parse("content://" + AUTHORITY);
 
-    interface Path{
+    interface Path {
         String FAVORITE_MOVIES = "favorite_movies";
     }
 
-    private static Uri buildUri(String ... paths){
+    private static Uri buildUri(String... paths) {
         Uri.Builder builder = BASE_CONTENT_URI.buildUpon();
-        for (String path : paths){
+        for (String path : paths) {
             builder.appendPath(path);
         }
         Log.d("TAG", builder.toString());
@@ -31,7 +31,7 @@ public class FavoriteMovieProvider {
     }
 
     @TableEndpoint(table = FavoriteMovieDatabase.FAVORITE_MOVIES)
-    public static class FavoriteMovies{
+    public static class FavoriteMovies {
         @ContentUri(
                 path = Path.FAVORITE_MOVIES,
                 type = "vnd.android.cursor.dir/favorite_movie",
@@ -44,7 +44,7 @@ public class FavoriteMovieProvider {
                 type = "vnd.android.cursor.item/movie",
                 whereColumn = FavoriteMovieColumns.MOVIE_ID,
                 pathSegment = 1)
-        public static Uri withId(long id){
+        public static Uri withId(long id) {
             return buildUri(Path.FAVORITE_MOVIES, String.valueOf(id));
         }
     }

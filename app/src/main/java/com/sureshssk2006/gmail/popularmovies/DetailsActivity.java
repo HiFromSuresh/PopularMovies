@@ -12,17 +12,16 @@ public class DetailsActivity extends AppCompatActivity {
     private final String FAVORITEKEY = "favorite_key";
 
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_details2);
 
         Intent intent = getIntent();
-        TMDBmovieList.TmdbMovee movie = (TMDBmovieList.TmdbMovee)intent.getParcelableExtra(ACTIVITYKEY);
+        TMDBmovieList.TmdbMovee movie = (TMDBmovieList.TmdbMovee) intent.getParcelableExtra(ACTIVITYKEY);
         String id = intent.getStringExtra(FAVORITEACTIVITYKEY);
 
-        if(savedInstanceState == null && movie != null){
+        if (savedInstanceState == null && movie != null) {
             DetailsFragment detailsFragment = new DetailsFragment();
             Bundle args = new Bundle();
             args.putParcelable(OBJECT_KEY, movie);
@@ -32,7 +31,7 @@ public class DetailsActivity extends AppCompatActivity {
                     .commit();
         }
 
-        if(savedInstanceState == null && id != null){
+        if (savedInstanceState == null && id != null) {
             DetailsFragment detailsFragment = new DetailsFragment();
             Bundle args = new Bundle();
             args.putString(FAVORITEKEY, id);
