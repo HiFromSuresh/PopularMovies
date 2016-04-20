@@ -1,8 +1,8 @@
 <resources>
     <string name="app_name">PopularMovies</string>
 
-    <string name="popularity_desc">popularity.desc</string>
-    <string name="rating_desc">vote_count.desc</string>
+    <string name="popularity_desc">popular</string>
+    <string name="rating_desc">top_rated</string>
     <string name="action_sort_by">Sort by</string>
     <string name="popularity">Popularity</string>
     <string name="rating">Rating</string>

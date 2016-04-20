@@ -11,9 +11,9 @@ import retrofit2.http.Query;
 public class TMDBService {
     public interface TMDBapi {
 
-        @GET("3/discover/movie?")
+        @GET("3/movie/{sort_by}?")
         Call<TMDBmovieList> getMovies(
-                @Query("sort_by") String sortByValue,
+                @Path("sort_by") String sortByValue,
                 @Query("api_key") String apiKeyVAlue);
 
         @GET("3/movie/{movie_id}/videos?")
