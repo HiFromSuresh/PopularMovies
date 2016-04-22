@@ -24,7 +24,11 @@
             android:authorities="com.sureshssk2006.gmail.popularmovies"
             android:exported="false" />
 
-        <activity android:name=".DetailsActivity"></activity>
+        <activity android:name=".DetailsActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".MainActivity" />
+        </activity>
     </application>
 
 </manifest>
