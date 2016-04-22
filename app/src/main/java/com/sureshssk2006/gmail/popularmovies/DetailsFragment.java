@@ -31,6 +31,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -71,6 +72,7 @@ public class DetailsFragment extends Fragment implements LoaderManager.LoaderCal
     boolean loadFromDB = false;
     long movieIdLong;
     String movieId;
+    private ProgressBar progressBar;
 
     private final String OBJECT_KEY = "object_key";
     private final String FAVORITEKEY = "favorite_key";
@@ -124,7 +126,9 @@ public class DetailsFragment extends Fragment implements LoaderManager.LoaderCal
         reviewLayout = (LinearLayout) rootView.findViewById(R.id.review_layout);
         reviewBtn = (TextView) rootView.findViewById(R.id.review_button);
         markFavoriteBtn = (Button) rootView.findViewById(R.id.btn_favorite);
+        progressBar = (ProgressBar) rootView.findViewById(R.id.progressBar1);
 
+        progressBar.setVisibility(View.GONE);
 
         //get Data from bundle
         Bundle bundle = this.getArguments();
@@ -164,6 +168,7 @@ public class DetailsFragment extends Fragment implements LoaderManager.LoaderCal
     }
 
     private void addTrailers() {
+        progressBar.setVisibility(View.VISIBLE);
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(BASE_URL)
                 .addConverterFactory(GsonConverterFactory.create())
@@ -213,6 +218,8 @@ public class DetailsFragment extends Fragment implements LoaderManager.LoaderCal
                     }
                 }
 
+                progressBar.setVisibility(View.GONE);
+
             }
 
             @Override
@@ -222,6 +229,7 @@ public class DetailsFragment extends Fragment implements LoaderManager.LoaderCal
     }
 
     private void addReviews() {
+        progressBar.setVisibility(View.VISIBLE);
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(BASE_URL)
                 .addConverterFactory(GsonConverterFactory.create())
@@ -262,6 +270,7 @@ public class DetailsFragment extends Fragment implements LoaderManager.LoaderCal
                         reviewLayout.addView(seperator);
                     }
                 }
+                progressBar.setVisibility(View.GONE);
             }
 
             @Override
