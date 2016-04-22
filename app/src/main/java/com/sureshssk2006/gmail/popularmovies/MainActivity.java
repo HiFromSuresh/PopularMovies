@@ -14,6 +14,7 @@ public class MainActivity extends AppCompatActivity implements MovieListFragment
     private static final String ACTIVITYKEY = "activity_key";
     private static final String FAVORITEKEY = "favorite_key";
     private static final String FAVORITEACTIVITYKEY = "favorite_activity_key";
+    private static final String TWOPANE = "two_pane";
     private boolean mTwoPane;
 
     @Override
@@ -21,20 +22,20 @@ public class MainActivity extends AppCompatActivity implements MovieListFragment
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        if (savedInstanceState == null) {
-            getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.main_container, new MovieListFragment())
-                    .commit();
-        }
         if (findViewById(R.id.details_container) != null) {
             mTwoPane = true;
-            /*if (savedInstanceState == null) {
-                getSupportFragmentManager().beginTransaction()
-                        .replace(R.id.details_container, new DetailsFragment(), DETAIL_FRAG)
-                        .commit();
-            }*/
         } else {
             mTwoPane = false;
+        }
+
+        if (savedInstanceState == null) {
+            Bundle args = new Bundle();
+            args.putBoolean(TWOPANE, mTwoPane);
+            MovieListFragment movieListFragment = new MovieListFragment();
+            movieListFragment.setArguments(args);
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.main_container, movieListFragment)
+                    .commit();
         }
     }
 

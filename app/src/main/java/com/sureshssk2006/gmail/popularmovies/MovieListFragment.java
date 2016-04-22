@@ -45,6 +45,9 @@ public class MovieListFragment extends Fragment {
     private TMDBmovieList movieList;
     private static final String OBJECT_KEY = "object_key";
     private RecyclerView recyclerView;
+    private static final String TWOPANE = "two_pane";
+    private boolean mTwoPane;
+
 
     public MovieListFragment() {
         // Required empty public constructor
@@ -112,7 +115,7 @@ public class MovieListFragment extends Fragment {
         editor.commit();
 
         //Make the retrofit call and load the posters
-        TMDBService.TMDBapi tmdBapi = retrofit.create(TMDBService.TMDBapi.class);
+        final TMDBService.TMDBapi tmdBapi = retrofit.create(TMDBService.TMDBapi.class);
         call = tmdBapi.getMovies(sortByValue, apiKeyVAlue);
         call.enqueue(new Callback<TMDBmovieList>() {
             @Override
@@ -121,9 +124,15 @@ public class MovieListFragment extends Fragment {
                     Log.d("TAG", "onResponse: " + response.body().toString());
                     movieList = response.body();
                     items = movieList.getResults();
-                    movieAdapter.swapList(items);
                 } catch (NullPointerException e) {
                     Toast.makeText(getContext(), "Null", Toast.LENGTH_SHORT).show();
+                }finally {
+                    movieAdapter.swapList(items);
+                    if(mTwoPane){
+                        TMDBmovieList.TmdbMovee movie = items.get(0);
+                        ((Callbackk) getActivity())
+                                .onItemSelected(movie);
+                    }
                 }
             }
 
@@ -144,6 +153,10 @@ public class MovieListFragment extends Fragment {
         sortByValue = sharedPreferences
                 .getString("SORT_VALUE", getResources().getString(R.string.popularity_desc));
         apiKeyVAlue = BuildConfig.TMDB_API_KEY;
+
+        //get the value mTwoPane or not
+        Bundle bundle = getArguments();
+        mTwoPane = bundle.getBoolean(TWOPANE);
 
         retrofit = new Retrofit.Builder()
                 .baseUrl(BASE_URL)
@@ -169,15 +182,7 @@ public class MovieListFragment extends Fragment {
                 TMDBmovieList.TmdbMovee movie = items.get(position);
                 ((Callbackk) getActivity())
                         .onItemSelected(movie);
-                /*DetailsFragment detailsFragment = new DetailsFragment();
-                Bundle args = new Bundle();
-                args.putParcelable(OBJECT_KEY, movie);
-                detailsFragment.setArguments(args);
-                getFragmentManager()
-                        .beginTransaction()
-                        .replace(R.id.details_container, detailsFragment)
-                        .addToBackStack(null)
-                        .commit();*/
+
             }
         });
 
