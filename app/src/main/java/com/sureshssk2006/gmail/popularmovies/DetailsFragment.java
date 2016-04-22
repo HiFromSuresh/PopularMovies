@@ -32,6 +32,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -73,6 +74,7 @@ public class DetailsFragment extends Fragment implements LoaderManager.LoaderCal
     long movieIdLong;
     String movieId;
     private ProgressBar progressBar;
+    ScrollView scrollView;
 
     private final String OBJECT_KEY = "object_key";
     private final String FAVORITEKEY = "favorite_key";
@@ -127,6 +129,7 @@ public class DetailsFragment extends Fragment implements LoaderManager.LoaderCal
         reviewBtn = (TextView) rootView.findViewById(R.id.review_button);
         markFavoriteBtn = (Button) rootView.findViewById(R.id.btn_favorite);
         progressBar = (ProgressBar) rootView.findViewById(R.id.progressBar1);
+        scrollView = (ScrollView) rootView.findViewById(R.id.scrollview);
 
         progressBar.setVisibility(View.GONE);
 
@@ -219,11 +222,21 @@ public class DetailsFragment extends Fragment implements LoaderManager.LoaderCal
                 }
 
                 progressBar.setVisibility(View.GONE);
+                scrollToBottom();
 
             }
 
             @Override
             public void onFailure(Throwable t) {
+            }
+        });
+    }
+
+    private void scrollToBottom() {
+        scrollView.post(new Runnable() {
+            @Override
+            public void run() {
+                scrollView.fullScroll(ScrollView.FOCUS_DOWN);
             }
         });
     }
@@ -271,6 +284,8 @@ public class DetailsFragment extends Fragment implements LoaderManager.LoaderCal
                     }
                 }
                 progressBar.setVisibility(View.GONE);
+                scrollToBottom();
+
             }
 
             @Override
